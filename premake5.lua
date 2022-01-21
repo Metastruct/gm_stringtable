@@ -11,14 +11,14 @@ local gmcommon = assert(_OPTIONS.gmcommon or os.getenv("GARRYSMOD_COMMON"),
 include(gmcommon)
 
 CreateWorkspace({ name = "stringtable" })
-	CreateProject({ serverside = true })
+	CreateProject({ serverside = true, source_path = "src" })
 		IncludeLuaShared()
 		IncludeHelpersExtended()
 		IncludeSDKCommon()
 		IncludeSDKTier0()
 		IncludeSDKTier1()
 
-	CreateProject({ serverside = false })
+	CreateProject({ serverside = false, source_path = "src" })
 		IncludeLuaShared()
 		IncludeHelpersExtended()
 		IncludeSDKCommon()
