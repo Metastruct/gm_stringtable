@@ -2,7 +2,7 @@
 
 #include "filesystem.h"
 
-#ifndef _LINUX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -346,7 +346,8 @@ LUA_FUNCTION(GetBool)
 
 	if (netTbl) {
 		int b;
-		LUA->PushNumber(((int)netTbl->GetStringUserData(LUA->GetNumber(2), &b) == 1) ? true : false);
+		const long thing = (long)netTbl->GetStringUserData(LUA->GetNumber(2), &b);
+		LUA->PushNumber(thing == 1 ? true : false);
 		return 1;
 	}
 	else
@@ -365,7 +366,7 @@ LUA_FUNCTION(GetNumber)
 
 	if (netTbl) {
 		int b;
-		const int thing = (int)netTbl->GetStringUserData(LUA->GetNumber(2), &b);
+		const long thing = (long)netTbl->GetStringUserData(LUA->GetNumber(2), &b);
 		LUA->PushNumber((float)thing);
 		return 1;
 	}
@@ -447,10 +448,10 @@ void PushVA(GarrysMod::Lua::ILuaBase* lua, const char* str, ...)
 	char buff[1024];
 	va_list argptr;
 	va_start(argptr, str);
-#ifdef _LINUX
-	vsprintf(buff, str, argptr);
-#else
+#ifdef _WIN32
 	vsprintf_s(buff, str, argptr);
+#else
+	vsprintf(buff, str, argptr);
 #endif
 	va_end(argptr);
 	lua->PushString(buff);
