@@ -127,11 +127,12 @@ LUA_FUNCTION(GetTableData)
 	if (netTbl) {
 		LUA->CreateTable();
 
-		// FIXME!!! No Null Termination!?!
 		for (int i = 0; i < netTbl->GetNumStrings(); i++) {
-			int b;
+			int len;
+			const char* userData = (const char*)netTbl->GetStringUserData(i, &len);
+
 			LUA->PushNumber(i);
-			LUA->PushString((const char*)netTbl->GetStringUserData(i, &b));
+			LUA->PushString(userData, len);
 			LUA->SetTable(-3);
 		}
 
@@ -567,7 +568,10 @@ void CreateMetaTable(GarrysMod::Lua::ILuaBase* lua) {
 
 GMOD_MODULE_OPEN()
 {
+	//SourceSDK::FactoryLoader engine_loader("engine");
+	//auto a = engine_loader.GetInterface<INetworkStringTableContainer>(networkstringtableclient_name);
 	g_NetworkStringTable = InterfacePointers::NetworkStringTableContainer();
+
 	if (g_NetworkStringTable == nullptr)
 	{
 		LUA->ThrowError("gm_stringtables: Error getting INetworkStringTableContainer interface.\n");
